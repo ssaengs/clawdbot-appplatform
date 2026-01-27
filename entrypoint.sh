@@ -53,13 +53,22 @@ fi
 CONFIG_FILE="$CLAWDBOT_STATE_DIR/clawdbot.json"
 if [ ! -f "$CONFIG_FILE" ]; then
   echo "Creating initial config: $CONFIG_FILE"
+
   cat > "$CONFIG_FILE" << 'CONFIGEOF'
 {
   "gateway": {
-    "mode": "local"
+    "mode": "local",
+    "trustedProxies": [
+      "127.0.0.1",
+      "::1",
+      "10.0.0.0/8",
+      "172.16.0.0/12",
+      "192.168.0.0/16"
+    ]
   }
 }
 CONFIGEOF
+  echo "Configured trustedProxies for App Platform (private networks)"
 fi
 
 PORT="${PORT:-8080}"
