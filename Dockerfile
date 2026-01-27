@@ -28,10 +28,10 @@ RUN set -eux; \
 # Install Clawdbot
 RUN npm install -g clawdbot@${CLAWDBOT_VERSION}
 
-# Create non-root user
-RUN useradd -r -u 10001 clawdbot \
+# Create non-root user with home directory
+RUN useradd -r -u 10001 -m -d /home/clawdbot clawdbot \
     && mkdir -p /data/.clawdbot /data/workspace \
-    && chown -R clawdbot:clawdbot /data
+    && chown -R clawdbot:clawdbot /data /home/clawdbot
 
 COPY entrypoint.sh /entrypoint.sh
 COPY litestream.yml /etc/litestream.yml
