@@ -11,18 +11,8 @@ if [ -n "$LITESTREAM_ACCESS_KEY_ID" ] && [ -n "$SPACES_BUCKET" ]; then
     "$CLAWDBOT_STATE_DIR/memory.db" || true
 fi
 
-# Update to latest Clawdbot
-echo "Checking for Clawdbot updates..."
-npm update -g clawdbot --prefer-online 2>/dev/null || true
-
-# Show version
+# Show version (image is rebuilt weekly with latest clawdbot)
 echo "Clawdbot version: $(clawdbot --version 2>/dev/null || echo 'unknown')"
-
-# Configure gateway for container deployment
-echo "Configuring gateway..."
-clawdbot config set gateway.mode local 2>/dev/null || true
-clawdbot config set gateway.bind lan 2>/dev/null || true
-clawdbot config set gateway.port "${PORT:-8080}" 2>/dev/null || true
 
 # Generate a gateway token if not provided (required for LAN binding)
 if [ -z "$CLAWDBOT_GATEWAY_TOKEN" ]; then
@@ -30,9 +20,12 @@ if [ -z "$CLAWDBOT_GATEWAY_TOKEN" ]; then
   echo "Generated gateway token (ephemeral)"
 fi
 
-# Run doctor to ensure config is valid
-echo "Running clawdbot doctor..."
-clawdbot doctor --non-interactive || true
+# Configure gateway for container deployment via environment
+export CLAWDBOT_GATEWAY_MODE=local
+export CLAWDBOT_GATEWAY_BIND=lan
+export CLAWDBOT_GATEWAY_PORT="${PORT:-8080}"
+
+echo "Gateway config: mode=$CLAWDBOT_GATEWAY_MODE bind=$CLAWDBOT_GATEWAY_BIND port=$CLAWDBOT_GATEWAY_PORT"
 
 # Get the global node_modules path
 CLAWDBOT_PATH=$(npm root -g)/clawdbot/dist/index.js
