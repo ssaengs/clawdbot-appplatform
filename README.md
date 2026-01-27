@@ -2,7 +2,7 @@
 
 Pre-built Docker image for deploying [Clawdbot](https://github.com/clawdbot/clawdbot) on DigitalOcean App Platform.
 
-[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/digitalocean-labs/clawdbot-appplatform/tree/main)
+[![Deploy to DO](https://www.deploytodo.com/do-btn-blue.svg)](https://cloud.digitalocean.com/apps/new?repo=https://github.com/bikramkgupta/clawdbot-appplatform/tree/main)
 
 ## Features
 
@@ -22,7 +22,7 @@ Pre-built Docker image for deploying [Clawdbot](https://github.com/clawdbot/claw
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
-│           GHCR Image: ghcr.io/digitalocean-labs/                 │
+│           GHCR Image: ghcr.io/bikramkgupta/                 │
 │                    clawdbot-appplatform                          │
 │  ┌───────────┐  ┌───────────┐  ┌────────────────────────────┐   │
 │  │ Node 22   │  │ Clawdbot  │  │ Litestream (optional)      │   │
@@ -82,7 +82,7 @@ Edit the `region` field in `app.yaml` to change.
 
 ```bash
 # Clone and deploy
-git clone https://github.com/digitalocean-labs/clawdbot-appplatform
+git clone https://github.com/bikramkgupta/clawdbot-appplatform
 cd clawdbot-appplatform
 
 # Validate spec

@@ -6,7 +6,7 @@ services:
   - name: clawdbot
     image:
       registry_type: GHCR
-      registry: digitalocean-labs
+      registry: bikramkgupta
       repository: clawdbot-appplatform
       tag: latest
     instance_count: 1

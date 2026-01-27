@@ -1,4 +1,4 @@
-FROM node:22-slim
+FROM node:24-slim
 
 # Install Litestream for SQLite backup/restore (multi-arch)
 ARG TARGETARCH
