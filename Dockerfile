@@ -1,28 +1,42 @@
 FROM node:24-slim
 
-# Install Litestream for SQLite backup/restore (multi-arch)
 ARG TARGETARCH
-RUN apt-get update && apt-get install -y wget ca-certificates git \
-    && LITESTREAM_ARCH=$([ "$TARGETARCH" = "arm64" ] && echo "arm64" || echo "amd64") \
-    && wget https://github.com/benbjohnson/litestream/releases/download/v0.3.13/litestream-v0.3.13-linux-${LITESTREAM_ARCH}.deb \
-    && dpkg -i litestream-v0.3.13-linux-${LITESTREAM_ARCH}.deb \
-    && rm litestream-v0.3.13-linux-${LITESTREAM_ARCH}.deb \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+ARG CLAWDBOT_VERSION=latest
+ARG LITESTREAM_VERSION=0.3.13
 
-# Install Clawdbot globally
-RUN npm install -g clawdbot@latest
+ENV PORT=8080 \
+    CLAWDBOT_STATE_DIR=/data/.clawdbot \
+    CLAWDBOT_WORKSPACE_DIR=/data/workspace \
+    NODE_ENV=production
 
-# Create data directory
-RUN mkdir -p /data/.clawdbot /data/workspace
+# Install OS deps + Litestream
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        ca-certificates \
+        wget \
+        git; \
+    LITESTREAM_ARCH="$( [ "$TARGETARCH" = "arm64" ] && echo arm64 || echo amd64 )"; \
+    wget -O /tmp/litestream.deb \
+      https://github.com/benbjohnson/litestream/releases/download/v${LITESTREAM_VERSION}/litestream-v${LITESTREAM_VERSION}-linux-${LITESTREAM_ARCH}.deb; \
+    dpkg -i /tmp/litestream.deb; \
+    rm /tmp/litestream.deb; \
+    apt-get clean; \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Clawdbot
+RUN npm install -g clawdbot@${CLAWDBOT_VERSION}
+
+# Create non-root user
+RUN useradd -r -u 10001 clawdbot \
+    && mkdir -p /data/.clawdbot /data/workspace \
+    && chown -R clawdbot:clawdbot /data
 
 COPY entrypoint.sh /entrypoint.sh
 COPY litestream.yml /etc/litestream.yml
 RUN chmod +x /entrypoint.sh
 
-ENV PORT=8080
-ENV CLAWDBOT_STATE_DIR=/data/.clawdbot
-ENV CLAWDBOT_WORKSPACE_DIR=/data/workspace
-
 EXPOSE 8080
 
+USER clawdbot
 ENTRYPOINT ["/entrypoint.sh"]
