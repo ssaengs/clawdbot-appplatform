@@ -60,6 +60,9 @@ if [ ! -f "$CONFIG_FILE" ]; then
     "auth": {
       "mode": "token",
       "token": "${CLAWDBOT_GATEWAY_TOKEN}"
+    },
+    "controlUi": {
+      "dangerouslyDisableDeviceAuth": true
     }
   }
 }
